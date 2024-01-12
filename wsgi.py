@@ -1,7 +1,5 @@
 import os
 
-
-
 os.environ.setdefault('ATOM_API_PREFIX', '/omllava')
 os.environ.setdefault('DEBUG', 'true')
 import time
@@ -20,7 +18,6 @@ from linker_atom.config import settings
 from linker_atom.lib.exception import VqlError
 from linker_atom.lib.log import logger
 
-
 app = get_app()
 
 
@@ -37,7 +34,9 @@ async def startup_event():
             logger.warning(f"load {model_id} model failed.")
             break
 
+
 router = UdfAPIRoute()
+
 
 @router.post("/v1/process/batch_infer", response_model=BatchResponse, name="batch_infer")
 async def detect_urls(request: Request, body: BatchQueryBody) -> BatchResponse:
@@ -59,10 +58,12 @@ async def detect_urls(request: Request, body: BatchQueryBody) -> BatchResponse:
     resp = BatchResponse(took=(time.time() - s_time) * 1000, code=200, answer=res)
     return resp
 
+
 app.include_router(
     router=router,
     prefix=settings.atom_api_prefix
 )
+
 
 def run():
     auto_loop_setup(True)
@@ -73,6 +74,7 @@ def run():
         workers=settings.atom_workers,
         access_log=False
     )
+
 
 if __name__ == '__main__':
     run()

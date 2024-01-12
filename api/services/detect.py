@@ -1,20 +1,15 @@
 import copy
 import json
 import os
-
+import sys
 import requests
 import torch
 import time
 
 from api.model_protector import ModelProtector
 from api.utils import LRUCache, get_model_state_dict
-from vllm import MLLM, SamplingParams
 from api.config import EnvVar
 from api.schemas.response import Answer
-
-from vllm.logger import init_logger
-
-logger = init_logger(__name__)
 dectypt = os.getenv('IS_ENCRYPT') != 'false'
 
 
@@ -162,12 +157,12 @@ class Engine:
 
 
         if "n98" in model_id:
-            endpoint = "http://10.8.23.24:8800/omllava/v1/process/batch_infer"
-            model_id = "n98"
+            endpoint = "http://0.0.0.0:8002/omllava/v1/process/batch_infer"
+            model_id = "omchat-7b-chat-n98"
 
         else:
-            endpoint = "http://10.8.23.24:8800/omllava/v1/process/batch_infer"
-            model_id = "n114"
+            endpoint = "http://0.0.0.0:8003/omllava/v1/process/batch_infer"
+            model_id = "omchat-7b-chat-n114"
 
         body = {
             "model_id": model_id,
