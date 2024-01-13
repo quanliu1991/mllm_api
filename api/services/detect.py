@@ -1,14 +1,6 @@
-import copy
-import json
 import os
-import sys
 import requests
-import torch
-import time
-
-from api.model_protector import ModelProtector
-from api.utils import LRUCache, get_model_state_dict
-from api.config import EnvVar
+from api.utils import LRUCache
 from api.schemas.response import Answer
 dectypt = os.getenv('IS_ENCRYPT') != 'false'
 
@@ -64,36 +56,3 @@ class Engine:
 
 
 
-if __name__ == "__main__":
-    e = Engine()
-    s_t = time.time()
-    model = e.load_model(model_id="omchat-llava-qllama-7b-chat-v1-1-finetune_qlora_zh_n67",
-                         # "lq_mcqa_0_314",#"omchat-llava-qllama-7b-chat-v1-1-qllama-finetune_zh_n97",#"omchat-llava-vicuna-7b-v1.5-v1-1-finetune_zh_n92",",#
-                         resources_prefix="../../../llm_models"
-                         )
-    print(time.time() - s_t)
-
-    sampling_params = SamplingParams(
-        temperature=0.9, max_tokens=512, top_p=1.0, stop=["<|im_end|>"]
-    )
-    images = []
-    texts = []
-
-    res = model.generate(
-        prompts=[[{"user": "图片上有什么"}]],
-        images=[{"src_type": "url",
-                 "image_src": "https://img0.baidu.com/it/u=56109659,3345510515&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"}],
-        choices=[[]],
-        sampling_params=sampling_params,
-        initial_prompt="你好",
-    )
-    generated_texts = []
-    for output in res:
-        text = output.outputs[0].text
-        input_tokens = len(output.prompt_token_ids)
-        output_tokens = len(output.outputs[0].token_ids)
-        generated_texts.append(Answer(content=text, input_tokens=input_tokens, output_tokens=output_tokens))
-        print(output.prompt)
-    print(generated_texts)
-    print(time.time() - s_t)
-    print("done")
