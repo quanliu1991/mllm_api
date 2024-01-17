@@ -24,8 +24,8 @@ async def detect_urls(request: Request, body: QueryBody) -> Response:
             text=body.text,
             choices=body.choices,
             initial_prompt=body.initial_prompt,
-            temperature=body.temperature, 
-            max_tokens=body.max_tokens, 
+            temperature=body.temperature,
+            max_tokens=body.max_tokens,
             top_p=body.top_p
         )
     except Exception as error:
@@ -34,6 +34,7 @@ async def detect_urls(request: Request, body: QueryBody) -> Response:
         return resp
     resp = Response(took=(time.time() - s_time) * 1000, code=200, answer=res)
     return resp
+
 
 @router.post("/batch_infer", response_model=BatchResponse, name="batch_infer")
 async def detect_urls(request: Request, body: BatchQueryBody) -> BatchResponse:
